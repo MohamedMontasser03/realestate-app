@@ -1,9 +1,14 @@
 import React from 'react'
+import BuildingItem from './BuildingItem'
 
 function Buldings() {
   return (
-    <div>
+    <div className='buildings'>
         <h2>REAL ESTATE AVAILABLE FOR PERCHASE</h2>
+        <div className="buildings__list">
+            <BuildingItem/>
+            <BuildingItem/>
+        </div>
     </div>
   )
 }
