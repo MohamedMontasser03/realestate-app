@@ -4,7 +4,7 @@ function PortfolioItem() {
   return (
     <div className='port__item'>
         <img src="https://www.svgrepo.com/show/362151/sign-check.svg" alt="Check" className="check" />
-        <img src="images/buildings/001.webp" alt="Building" />
+        <img src="images/buildings/asset1.png" alt="Building" />
         <div className="info">
         <span>Name</span>
         <hr />
