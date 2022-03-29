@@ -1,4 +1,5 @@
 import React from 'react'
+import config from '../config/index'
 import BuildingItem from './BuildingItem'
 
 function Buldings() {
@@ -6,18 +7,9 @@ function Buldings() {
     <div className='buildings'>
         <h2>REAL ESTATE AVAILABLE FOR PERCHASE</h2>
         <div className="buildings__list scrl">
-            <BuildingItem/>
-            <BuildingItem/>
-            <BuildingItem/>
-            <BuildingItem/>
-            <BuildingItem/>
-            <BuildingItem/>
-            <BuildingItem/>
-            <BuildingItem/>
-            <BuildingItem/>
-            <BuildingItem/>
-            <BuildingItem/>
-            <BuildingItem/>
+            {
+              new Array(config.noOfTile).fill(0).map((_, i)=><BuildingItem key={i+1} building={i+1}/>)
+            }
         </div>
     </div>
   )
