@@ -1,10 +1,12 @@
 import React from 'react'
 
-function PortfolioItem() {
+type PortfolioItemProps = {building: number};
+
+function PortfolioItem({building}: PortfolioItemProps) {
   return (
     <div className='port__item'>
         <img src="https://www.svgrepo.com/show/362151/sign-check.svg" alt="Check" className="check" />
-        <img src="images/buildings/asset1.png" alt="Building" />
+        <img src={`images/buildings/asset${building}.png`} alt="Building" />
         <div className="info">
         <span>Name</span>
         <hr />

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-function useMousePos(ref: React.RefObject<HTMLCanvasElement>) {
+function useMousePos(ref: React.RefObject<HTMLElement>) {
     const [clicked, setClicked] = useState(false);
     const [pos, setPos] = useState([0, 0]);
     const [dPos, setDPos] = useState([0, 0]);
@@ -9,14 +9,18 @@ function useMousePos(ref: React.RefObject<HTMLCanvasElement>) {
 
     const onMouseDown = (e: MouseEvent) => {
         setClicked(true);
-        setPos([e.x, e.y]);
+
+        const rect = el.getBoundingClientRect();
+        setPos([e.clientX- el.offsetLeft, e.clientY- el.offsetTop]);
     }
     const onWindowMouseUp = (e: MouseEvent) => {
         setClicked(false);
     }
     const onMove = (e: MouseEvent)=>{
-        setDPos([e.x - pos[0], e.y - pos[1]]);
-        setPos([e.x, e.y]);
+        const rect = el.getBoundingClientRect();
+
+        setDPos([e.clientX - pos[0] - el.offsetLeft, e.clientY - pos[1] - el.offsetTop]);
+        setPos([e.clientX- el.offsetLeft, e.clientY- el.offsetTop]);
     }
     
     el.addEventListener("mousedown", onMouseDown);
