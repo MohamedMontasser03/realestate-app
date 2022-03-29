@@ -7,7 +7,7 @@ type BuildingItemProps = {building: number};
 
 function BuildingItem({building}: BuildingItemProps) {
   const imgRef = useRef(null);
-  const {clicked, x, y} = useMousePos(imgRef);
+  const {clicked} = useMousePos(imgRef);
   const [state, setState] = useState("");
   const [grid, dispatchGrid] = useGrid();
   const [selected, setSelected] = useSelected();
@@ -34,6 +34,7 @@ useEffect(() => {
     document.body.style.cursor = "default";
   }
 }
+// eslint-disable-next-line react-hooks/exhaustive-deps
 }, [building, clicked, grid, state])
 
 

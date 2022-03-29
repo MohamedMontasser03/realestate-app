@@ -33,7 +33,7 @@ function Canvas() {
     }
 
     ctx?.clearRect(0, 0, 1000, 1000);
-    Object.keys(grid).forEach((v) => drawBuilding(+v, rowConst*grid[v].row + colConst * grid[v].col, rowConst*grid[v].row))
+    Object.keys(grid).sort((a, b) => grid[a].row - grid[b].row).forEach((v) => drawBuilding(+v, rowConst*grid[v].row + colConst * grid[v].col, rowConst*grid[v].row))
 
     ////
 
@@ -51,7 +51,7 @@ function Canvas() {
     ctx?.restore();
     }
 
-  }, [grid, pos, selected, x, y]);
+  }, [grid, pos, selected, setSelected, x, y]);
   
 
   return <div><canvas ref={crf}/></div>

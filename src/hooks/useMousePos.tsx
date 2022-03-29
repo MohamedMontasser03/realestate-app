@@ -9,15 +9,13 @@ function useMousePos(ref: React.RefObject<HTMLElement>) {
 
     const onMouseDown = (e: MouseEvent) => {
         setClicked(true);
-
-        const rect = el.getBoundingClientRect();
+        
         setPos([e.clientX- el.offsetLeft, e.clientY- el.offsetTop]);
     }
     const onWindowMouseUp = (e: MouseEvent) => {
         setClicked(false);
     }
     const onMove = (e: MouseEvent)=>{
-        const rect = el.getBoundingClientRect();
 
         setDPos([e.clientX - pos[0] - el.offsetLeft, e.clientY - pos[1] - el.offsetTop]);
         setPos([e.clientX- el.offsetLeft, e.clientY- el.offsetTop]);
