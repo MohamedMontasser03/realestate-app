@@ -6,7 +6,7 @@ import React, {
   } from "react";
 import { SelectedType } from "./SelectedContext";
   
-  type GridType = {
+  export type GridType = {
     [key:string]: {col: number, row: number};
   }
 
@@ -42,7 +42,7 @@ import { SelectedType } from "./SelectedContext";
   };
   
   function GridProvider(props: { children?: ReactNode }) {
-    const state = useReducer(GridReducer, {"2": {col: 0, row: 0}, "1": {col: 1, row: 1},"4": {col: 1, row: 0}});
+    const state = useReducer(GridReducer, {});
   
     return <GridContext.Provider value={state} {...props} />;
   }

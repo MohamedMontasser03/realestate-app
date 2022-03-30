@@ -9,33 +9,34 @@ function BuildingItem({building}: BuildingItemProps) {
   const imgRef = useRef(null);
   const {clicked} = useMousePos(imgRef);
   const [state, setState] = useState("");
-  const [grid, dispatchGrid] = useGrid();
+  const [grid] = useGrid();
   const [selected, setSelected] = useSelected();
 
 useEffect(() => {
-  
+
   if(grid[building] !== undefined){
     setState("gray");
     return;
   }
 
   if( state !== "gray"){
-  if(clicked){
+  if(clicked && state !== "active"){
     setState("active"); 
     setSelected((s) => ({...s, num: building}));
     document.body.style.cursor = "grabbing";
-  }else{
+  }else if(!clicked && state === "active"){
     setState("");
-    if(!selected.taken){
-      dispatchGrid({type:'add', payload: selected})
+    if(selected.taken){
+      setSelected((s) => ({...s, dropped: false, num: 0}));
+    }else{
+      setSelected((s) => ({...s, dropped: s.num ? true:false}));
     }
-    setSelected((s) => ({...s, num: 0}));
 
     document.body.style.cursor = "default";
   }
 }
 // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [building, clicked, grid, state])
+}, [clicked, grid, state, selected])
 
 
   return (

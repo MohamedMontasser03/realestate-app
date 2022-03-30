@@ -240,3 +240,61 @@ canvas {
   background: #888;
 }
 /* End Scroll */
+
+/* Start Modal */
+.canv {
+  position: relative;
+}
+.canv.canvmodal::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(2px);
+}
+.modal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 0.5rem;
+  padding: 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 30rem;
+  gap: 0.8rem;
+  z-index: 1;
+}
+
+.modal .building {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.modal img {
+  width: 4rem;
+}
+.buttons button:first-child {
+  background-color: #009933;
+  border: none;
+  color: #fff;
+  font-size: 0.7rem;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  padding: 0.5rem 2.8rem;
+  margin-right: 1rem;
+}
+.buttons button:last-child {
+  background-color: #ff0404;
+  border: none;
+  color: #fff;
+  font-size: 0.7rem;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  padding: 0.5rem 2.8rem;
+}
+/* End Modal */

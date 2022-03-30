@@ -10,6 +10,7 @@ import React, {
     row: number;
     col: number;
     taken: boolean;
+    dropped: boolean;
 };
 
   type ContextType = [SelectedType, React.Dispatch<React.SetStateAction<SelectedType>>];
@@ -17,7 +18,7 @@ import React, {
   const SelectedContext = createContext({} as ContextType);
   
   function SelectedProvider(props: { children?: ReactNode }) {
-    const state = useState({num: 0, row: 0, col: 0, taken: false});
+    const state = useState({num: 0, row: 0, col: 0, taken: false, dropped: false});
   
     return <SelectedContext.Provider value={state} {...props} />;
   }
