@@ -28,56 +28,66 @@ function Canvas() {
   useEffect(() => {
     const ctx = crf.current!.getContext("2d");
 
-    const img = document.createElement("img");
+    
     const drawBuilding = (build:number, x:number, y:number) => {
+      const img = new Image();
       img.src = `images/buildings/asset${build}.png`;
       ctx?.drawImage(img, pos[0]+x, pos[1]+y);
-
     }
 
     ctx?.clearRect(0, 0, crf.current!.clientWidth, crf.current!.clientWidth);
 
-
-    // Object.keys(grid).forEach((v) => {
-    //   ctx!.fillStyle = "#403f41";
-    //   ctx?.fillRect(pos[0] + rowConst*grid[v].row + colConst * grid[v].col - 7, pos[1] + rowConst*grid[v].row,260,270)
-    // })
-
     const preMap: GridType = {
-      "28a": {col: -1, row:-1},
-      "28b": {col: 0, row:-1},
-      "28c": {col: 1, row:-1},
-      "28d": {col: 2, row:-1},
-      "28e": {col: 3, row:-1},
-      "28aa": {col: -1, row:4},
-      "28ba": {col: 0, row:4},
-      "28ca": {col: 1, row:4},
-      "28da": {col: 2, row:4},
-      "28ea": {col: 3, row:4},
-      "28ab": {col: -1, row:0},
-      "28ac": {col: -1, row:1},
-      "28ad": {col: -1, row:2},
-      "28ae": {col: -1, row:3},
-      "28bb": {col: 3, row:0},
-      "28cc": {col: 3, row:1},
-      "28dd": {col: 3, row:2},
-      "28ee": {col: 3, row:3},
+      "28": {col: -1, row:-1},
+      "34": {col: 0, row:-1},
+      "37": {col: 1, row:-1},
+      "26": {col: 2, row:-1},
+      "30": {col: 3, row:-1},
+      "10": {col: -1, row:4},
+      "40": {col: 0, row:4},
+      "22": {col: 1, row:4},
+      "11": {col: 2, row:4},
+      "19": {col: 3, row:4},
+      "17": {col: -1, row:0},
+      "35": {col: -1, row:1},
+      "24": {col: -1, row:2},
+      "20": {col: -1, row:3},
+      "29": {col: 3, row:0},
+      "14": {col: 3, row:1},
+      "38": {col: 3, row:2},
+      "7": {col: 3, row:3},
     }
+
+    for(let i = 0; i<4; i++){
+      for(let j = 0; j<3; j++){
+        drawBuilding(0, (rowConst+86)*i + colConst * j, rowConst*i - (colConst-97) * j);
+      }
+    }
+
     const map = {...grid, ...preMap};
-    Object.keys(map).sort((a, b) => map[a].row - map[b].row).forEach((v) => drawBuilding(parseInt(v), rowConst*map[v].row + colConst * map[v].col, rowConst*map[v].row))
+    Object.keys(map).sort((a, b) => {
+      if(map[a].row - map[b].row === 0)
+        return map[b].col - map[a].col;
+      return map[a].row - map[b].row;
+    })
+    .forEach((v) => drawBuilding(parseInt(v), (rowConst+86)*map[v].row + colConst * map[v].col, rowConst*map[v].row - (colConst-97) * map[v].col))
 
     ////
 
     if(selected.num && !selected.dropped){
-      const row = Math.floor((y-pos[1])/rowConst);
-    const col = Math.floor((x-pos[0]-row*rowConst)/colConst);
+
+      const a = colConst, b = rowConst, c = colConst - 97, d = rowConst+86;
+      const row = Math.floor(((y-pos[1])*a+c*(x-pos[0]))/(a*b+c*d));
+    const col = Math.floor(((y-pos[1])*d+b*(x-pos[0]))/(a*b+c*d));
+
+    console.log(row, col);
     ctx?.save();
     const redFilter = "grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8)";
     const taken = !((col<3 && col >= 0) && (row<4 && row >= 0)) || (Object.keys(grid).reduce<boolean>((p,c) => p || (grid[c].col === col && grid[c].row === row), false));
     console.log(!((col<3 && col >= 0) && (row<4 && row >= 0)), taken)
 
     ctx!.filter = "opacity(0.6)" + (taken ? redFilter : "");
-    drawBuilding(selected.num, rowConst*row + colConst * col, rowConst*row);
+    drawBuilding(selected.num, d*row + colConst * col, rowConst*row - c * col);
     setSelected({num: selected.num, col, row, taken, dropped: selected.dropped});
     ctx?.restore();
     }

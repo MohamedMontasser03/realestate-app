@@ -1,7 +1,7 @@
 const config = {
     noOfTile: 40,
-    colConst: 245, 
-    rowConst: 140,
+    colConst: 227,
+    rowConst: 116,
 }
 
 export default config;
