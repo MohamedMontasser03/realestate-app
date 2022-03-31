@@ -1,9 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useGrid } from '../context/GridContext';
+import { GridType, useGrid } from '../context/GridContext';
 import { useSelected } from '../context/SelectedContext';
 import useMousePos from '../hooks/useMousePos';
 
 type BuildingItemProps = {building: number};
+const preMap: GridType = {
+  "28": {col: -1, row:-1},
+  "34": {col: 0, row:-1},
+  "37": {col: 1, row:-1},
+  "26": {col: 2, row:-1},
+  "30": {col: 3, row:-1},
+  "10": {col: -1, row:4},
+  "40": {col: 0, row:4},
+  "22": {col: 1, row:4},
+  "11": {col: 2, row:4},
+  "19": {col: 3, row:4},
+  "17": {col: -1, row:0},
+  "35": {col: -1, row:1},
+  "24": {col: -1, row:2},
+  "20": {col: -1, row:3},
+  "29": {col: 3, row:0},
+  "14": {col: 3, row:1},
+  "38": {col: 3, row:2},
+  "7": {col: 3, row:3},
+}
 
 function BuildingItem({building}: BuildingItemProps) {
   const imgRef = useRef(null);
@@ -14,7 +34,7 @@ function BuildingItem({building}: BuildingItemProps) {
 
 useEffect(() => {
 
-  if(grid[building] !== undefined){
+  if(grid[building] !== undefined || preMap[building] !== undefined){
     setState("gray");
     return;
   }
@@ -41,7 +61,7 @@ useEffect(() => {
 
   return (
     <div className={`buildings__item ${state}`}>
-        <img src={`images/buildings/asset${building}.png`} ref={imgRef} alt="building" />
+        <img src={`images/icons/asset${building}.png`} ref={imgRef} alt="building" />
         <div className="buildings__info">
             <span>Name:</span>
             <span className='price'>Price: 3000</span>

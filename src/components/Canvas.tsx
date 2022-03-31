@@ -76,11 +76,10 @@ function Canvas() {
 
     if(selected.num && !selected.dropped){
 
-      const a = colConst, b = rowConst, c = colConst - 97, d = rowConst+86;
-      const row = Math.floor(((y-pos[1])*a+c*(x-pos[0]))/(a*b+c*d));
-    const col = Math.floor(((y-pos[1])*d+b*(x-pos[0]))/(a*b+c*d));
-
-    console.log(row, col);
+      const a = colConst, b = rowConst, c = colConst - 97, d = rowConst+86, eps=0.5;
+      const row = Math.floor(((y-pos[1])*a+c*(x-pos[0]))/(a*b+c*d)-eps);
+    const col = Math.floor((-(y-pos[1])*d+b*(x-pos[0]))/(a*b+c*d)+eps);
+      
     ctx?.save();
     const redFilter = "grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8)";
     const taken = !((col<3 && col >= 0) && (row<4 && row >= 0)) || (Object.keys(grid).reduce<boolean>((p,c) => p || (grid[c].col === col && grid[c].row === row), false));
