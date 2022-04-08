@@ -3,6 +3,7 @@ import config from '../config/index'
 import { GridType, useGrid } from '../context/GridContext';
 import { useSelected } from '../context/SelectedContext';
 import useMousePos from '../hooks/useMousePos';
+import reqAnimation from '../utils/reqAnimation';
 import Modal from './Modal';
 
 function Canvas() {
@@ -24,19 +25,25 @@ function Canvas() {
     }
   }, [clicked, dx, dy]);
 
+  //The Grap UseEffect
+  useEffect(() => {
+    const a = colConst, b = rowConst, c = colConst - 97, d = rowConst+86, eps=0.5;
+
+    if(selected.num && !selected.dropped){
+      const row = Math.floor(((y-pos[1])*a+c*(x-pos[0]))/(a*b+c*d)-eps);
+      const col = Math.floor((-(y-pos[1])*d+b*(x-pos[0]))/(a*b+c*d)+eps);
+
+      const taken = !((col<3 && col >= 0) && (row<4 && row >= 0)) || (Object.keys(grid).reduce<boolean>((p,c) => p || (grid[c].col === col && grid[c].row === row), false));
+      setSelected({num: selected.num, col, row, taken, dropped: selected.dropped});
+      }
+    
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pos, x, y]);
+
   //The Draw UseEffect
   useEffect(() => {
     const ctx = crf.current!.getContext("2d");
-
-    
-    const drawBuilding = (build:number, x:number, y:number) => {
-      const img = new Image();
-      img.src = `images/buildings/asset${build}.png`;
-      ctx?.drawImage(img, pos[0]+x, pos[1]+y);
-    }
-
-    ctx?.clearRect(0, 0, crf.current!.clientWidth, crf.current!.clientWidth);
-
+    const a = colConst, b = rowConst, c = colConst - 97, d = rowConst+86;
     const preMap: GridType = {
       "28": {col: -1, row:-1},
       "34": {col: 0, row:-1},
@@ -58,41 +65,48 @@ function Canvas() {
       "7": {col: 3, row:3},
     }
 
-    for(let i = 0; i<4; i++){
-      for(let j = 0; j<3; j++){
-        drawBuilding(0, (rowConst+86)*i + colConst * j, rowConst*i - (colConst-97) * j);
+    
+    const drawBuilding = (build:number, x:number, y:number) => {const img = new Image();
+      img.src = `images/buildings/asset${build}.png`;
+      setPos((v) => {
+        ctx?.drawImage(img, v[0]+x, v[1]+y);
+        return v;
+      })
+    }
+
+    reqAnimation(() => {
+      ctx?.clearRect(0, 0, crf.current!.clientWidth, crf.current!.clientWidth);
+
+      for(let i = 0; i<4; i++){
+        for(let j = 0; j<3; j++){
+          drawBuilding(0, d*i + a * j, b*i - c * j);
+        }
       }
-    }
+  
+      const map = {...grid, ...preMap};
+      Object.keys(map).sort((a, b) => {
+        if(map[a].row - map[b].row === 0)
+          return map[b].col - map[a].col;
+        return map[a].row - map[b].row;
+      })
+      .forEach((v) => drawBuilding(parseInt(v), d*map[v].row + a * map[v].col, b*map[v].row - c * map[v].col))
 
-    const map = {...grid, ...preMap};
-    Object.keys(map).sort((a, b) => {
-      if(map[a].row - map[b].row === 0)
-        return map[b].col - map[a].col;
-      return map[a].row - map[b].row;
-    })
-    .forEach((v) => drawBuilding(parseInt(v), (rowConst+86)*map[v].row + colConst * map[v].col, rowConst*map[v].row - (colConst-97) * map[v].col))
-
-    ////
-
-    if(selected.num && !selected.dropped){
-
-      const a = colConst, b = rowConst, c = colConst - 97, d = rowConst+86, eps=0.5;
-      const row = Math.floor(((y-pos[1])*a+c*(x-pos[0]))/(a*b+c*d)-eps);
-    const col = Math.floor((-(y-pos[1])*d+b*(x-pos[0]))/(a*b+c*d)+eps);
+      setSelected((v) => {
+        if(v.num && !v.dropped){
+            
+          ctx?.save();
+          const redFilter = "grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8)";
+          
+          ctx!.filter = "opacity(0.6) " + (v.taken ? redFilter : "");
+          drawBuilding(v.num, d*v.row + a * v.col, b*v.row - c * v.col);
+          ctx?.restore();
+          }
+        return v;
+      })
       
-    ctx?.save();
-    const redFilter = "grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(600%) contrast(0.8)";
-    const taken = !((col<3 && col >= 0) && (row<4 && row >= 0)) || (Object.keys(grid).reduce<boolean>((p,c) => p || (grid[c].col === col && grid[c].row === row), false));
-    console.log(!((col<3 && col >= 0) && (row<4 && row >= 0)), taken)
-
-    ctx!.filter = "opacity(0.6)" + (taken ? redFilter : "");
-    drawBuilding(selected.num, d*row + colConst * col, rowConst*row - c * col);
-    setSelected({num: selected.num, col, row, taken, dropped: selected.dropped});
-    ctx?.restore();
-    }
-
+    }, 1000/60);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [grid, pos, selected, x, y]);
+  }, []);
   
 
   return <div className={`canv ${selected.dropped && selected.num ? "canvmodal":""}`}>{selected.dropped && selected.num ? <Modal/> : <></>}<canvas ref={crf}/></div>

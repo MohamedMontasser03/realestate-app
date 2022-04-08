@@ -10,7 +10,7 @@ function Modal() {
     <div className='modal'>
         <p>Confirm purchase</p>
         <div className="building">
-            <img src={`images/buildings/asset${selected.num}.png`} alt="building" />
+            <img src={`images/icons/asset${selected.num}.png`} alt="building" />
             <div className="buildings__info">
                 <span>Name:</span>
                 <span className='price'>Price: 3000</span>
