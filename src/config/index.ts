@@ -1,7 +1,19 @@
 const config = {
-    noOfTile: 40,
-    colConst: 227,
-    rowConst: 116,
-}
+  noOfTile: 32,
+  slots: [
+    { x: 296, y: 357 },
+    { x: 290, y: 436 },
+    { x: 354, y: 473 },
+    { x: 422, y: 513 },
+    { x: 493, y: 471 },
+    { x: 559, y: 510 },
+    { x: 681, y: 496 },
+    { x: 753, y: 454 },
+    { x: 781, y: 387 },
+    { x: 714, y: 349 },
+    { x: 413, y: 258 },
+    { x: 480, y: 296 },
+  ],
+};
 
 export default config;
