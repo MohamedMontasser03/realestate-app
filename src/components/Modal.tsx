@@ -44,7 +44,7 @@ function Modal({ activeState, modalState }: ModalProps) {
       <p>Confirm purchase</p>
       <div className="building">
         <img
-          src={`images/icons/asset${active.building + 1}.png`}
+          src={`images/buildings/asset${active.building + 1}.png`}
           alt="building"
         />
         <div className="buildings__info">

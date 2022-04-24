@@ -43,7 +43,7 @@ function BuildingItem({ building }: BuildingItemProps) {
       onDragStart={onDragStart}
       onDragEnd={onDragEnd}
     >
-      <img src={`images/icons/asset${building}.png`} alt="building" />
+      <img src={`images/buildings/asset${building}.png`} alt="building" />
       <div className="buildings__info">
         <span>Name:</span>
         <span className="price">Price: 3000</span>
