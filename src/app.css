@@ -192,7 +192,7 @@ canvas {
 .buildings__item.active {
   background-color: #feea98;
 }
-.buildings__item.gray {
+.buildings__item.taken {
   background-color: transparent;
   filter: grayscale();
 }

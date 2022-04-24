@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useContext, useReducer } from "react";
-import { SelectedType } from "./SelectedContext";
+import config from "../config";
 
 export type GridType = number[];
 
@@ -7,7 +7,7 @@ type ActionType = "add";
 
 type ReducerType = (
   state: GridType,
-  action: { type: ActionType; payload: SelectedType }
+  action: { type: ActionType; payload: number[] }
 ) => GridType;
 
 const GridContext = createContext(
@@ -15,7 +15,7 @@ const GridContext = createContext(
     GridType,
     React.Dispatch<{
       type: ActionType;
-      payload: SelectedType;
+      payload: number[];
     }>
   ]
 );
@@ -24,8 +24,13 @@ const GridReducer: ReducerType = (state, { type, payload }) => {
   try {
     switch (type) {
       case "add":
-        //  payload.num && (state[payload.num] = {col: payload.col, row: payload.row});
-        return state;
+        const [slot, building] = payload;
+        return state.map((item, index) => {
+          if (index === slot) {
+            return building;
+          }
+          return item;
+        });
       default:
         return state;
     }
@@ -35,7 +40,10 @@ const GridReducer: ReducerType = (state, { type, payload }) => {
 };
 
 function GridProvider(props: { children?: ReactNode }) {
-  const state = useReducer(GridReducer, []);
+  const state = useReducer(
+    GridReducer,
+    new Array(config.slots.length).fill(-1)
+  );
 
   return <GridContext.Provider value={state} {...props} />;
 }

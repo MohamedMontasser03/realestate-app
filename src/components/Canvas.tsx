@@ -1,10 +1,14 @@
+import Konva from "konva";
+import { Stage as StageType } from "konva/lib/Stage";
 import React, { useEffect } from "react";
 import { Image, Layer, Rect, Stage } from "react-konva";
 import useImage from "use-image";
 import config from "../config/index";
 import { useGrid } from "../context/GridContext";
+import Modal from "./Modal";
 
 function Canvas() {
+  const [grid] = useGrid();
   // loading Images
   const [bgImage] = useImage("images/background.png");
   const buildings: (HTMLImageElement | undefined)[] = new Array(
@@ -34,17 +38,88 @@ function Canvas() {
     }
   }, []);
 
-  //Draw
-  const [grid] = useGrid();
+  // handle Filters on draggable image
+  const draggableRef = React.useRef<Konva.Image>(null);
+  React.useEffect(() => {
+    draggableRef.current?.cache();
+  }, [draggableRef]);
 
+  // handle drag over for stage
+  const [active, setActive] = React.useState({
+    building: 1,
+    x: -200,
+    y: -200,
+    slot: -1,
+  });
+  const modalState = React.useState(false);
+  const stageRef = React.useRef<StageType>({} as StageType);
+  useEffect(() => {
+    const stage = stageRef.current;
+    const onDragOver = (e: DragEvent) => {
+      const building = e.dataTransfer?.types.find((type) =>
+        type.includes("building")
+      );
+      if (building) {
+        e.preventDefault();
+        const slot = config.slots.reduce((p, c, i) => {
+          const cap = 20;
+          if (
+            e.offsetX > (c.x + cap) * widthAspect &&
+            e.offsetX < (c.x + 161 - cap) * widthAspect &&
+            e.offsetY > (c.y + cap) * heightAspect &&
+            e.offsetY < (c.y + 105 - cap) * heightAspect
+          ) {
+            return i;
+          }
+          return p;
+        }, -1);
+
+        setActive({
+          building: parseInt(building.split("-")[1]),
+          x: e.offsetX,
+          y: e.offsetY,
+          slot: slot === -1 || grid[slot] !== -1 ? -1 : slot,
+        });
+      }
+    };
+    const onDrop = (e: DragEvent) => {
+      e.preventDefault();
+      const building = e.dataTransfer?.types.find((type) =>
+        type.includes("building")
+      );
+      if (building) {
+        if (active.slot !== -1) {
+          modalState[1](true);
+        }
+        setActive((v) => ({
+          ...v,
+          x: -200,
+          y: -200,
+        }));
+      }
+    };
+    if (stage) {
+      stage.container().addEventListener("dragover", onDragOver);
+      stage.container().addEventListener("drop", onDrop);
+    }
+
+    return () => {
+      if (stage) {
+        stage.container().removeEventListener("dragover", onDragOver);
+        stage.container().removeEventListener("drop", onDrop);
+      }
+    };
+  }, [active, grid, heightAspect, modalState, widthAspect]);
+
+  //Draw
   return (
-    <div
-      className={`canv ${
-        /*selected.dropped && selected.num ? "canvmodal" : */ ""
-      }`}
-    >
-      {/* {selected.dropped && selected.num ? <Modal /> : <></>} */}
-      <Stage width={1410 * widthAspect} height={700 * heightAspect}>
+    <div className={`canv`}>
+      <Modal activeState={[active, setActive]} modalState={modalState} />
+      <Stage
+        width={1410 * widthAspect}
+        height={700 * heightAspect}
+        ref={stageRef}
+      >
         <Layer>
           <Rect
             x={0}
@@ -60,9 +135,38 @@ function Canvas() {
             height={700 * heightAspect}
             image={bgImage}
           />
+          <Image
+            x={widthAspect * 373}
+            y={heightAspect * 304}
+            width={widthAspect * (permAssets[3]?.width || 0)}
+            height={heightAspect * (permAssets[3]?.height || 0)}
+            image={permAssets[3]}
+          />
+
+          <Image
+            x={widthAspect * 427}
+            y={heightAspect * 140}
+            width={widthAspect * (permAssets[2]?.width || 0)}
+            height={heightAspect * (permAssets[2]?.height || 0)}
+            image={permAssets[2]}
+          />
+          <Image
+            x={widthAspect * 384}
+            y={heightAspect * 362}
+            width={widthAspect * (permAssets[4]?.width || 0)}
+            height={heightAspect * (permAssets[4]?.height || 0)}
+            image={permAssets[4]}
+          />
+          <Image
+            x={widthAspect * 558}
+            y={heightAspect * 380}
+            width={widthAspect * (permAssets[5]?.width || 0)}
+            height={heightAspect * (permAssets[5]?.height || 0)}
+            image={permAssets[5]}
+          />
           {grid.map((b, index) => {
             const building = buildings[b];
-            if (building) {
+            if (b !== -1 && building) {
               return (
                 <Image
                   key={index}
@@ -86,32 +190,11 @@ function Canvas() {
             image={permAssets[0]}
           />
           <Image
-            x={widthAspect * 427}
-            y={heightAspect * 140}
-            width={widthAspect * (permAssets[2]?.width || 0)}
-            height={heightAspect * (permAssets[2]?.height || 0)}
-            image={permAssets[2]}
-          />
-          <Image
             x={widthAspect * 599}
             y={heightAspect * 11}
             width={widthAspect * (permAssets[0]?.width || 0)}
             height={heightAspect * (permAssets[0]?.height || 0)}
             image={permAssets[0]}
-          />
-          <Image
-            x={widthAspect * 373}
-            y={heightAspect * 304}
-            width={widthAspect * (permAssets[3]?.width || 0)}
-            height={heightAspect * (permAssets[3]?.height || 0)}
-            image={permAssets[3]}
-          />
-          <Image
-            x={widthAspect * 384}
-            y={heightAspect * 362}
-            width={widthAspect * (permAssets[4]?.width || 0)}
-            height={heightAspect * (permAssets[4]?.height || 0)}
-            image={permAssets[4]}
           />
           <Image
             x={widthAspect * 573}
@@ -261,11 +344,17 @@ function Canvas() {
             image={permAssets[1]}
           />
           <Image
-            x={widthAspect * 558}
-            y={heightAspect * 380}
-            width={widthAspect * (permAssets[5]?.width || 0)}
-            height={heightAspect * (permAssets[5]?.height || 0)}
-            image={permAssets[5]}
+            x={active.x - (161 * widthAspect) / 2}
+            y={active.y - (105 * heightAspect) / 2}
+            width={161 * widthAspect}
+            height={105 * heightAspect}
+            image={buildings[active.building]}
+            opacity={0.5}
+            filters={[Konva.Filters.RGB]}
+            red={255}
+            green={active.slot !== -1 ? 255 : 0}
+            blue={active.slot !== -1 ? 255 : 0}
+            ref={draggableRef}
           />
         </Layer>
       </Stage>

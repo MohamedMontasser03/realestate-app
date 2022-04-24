@@ -9,9 +9,9 @@ function Portfolio() {
     <div className="portfolio">
       <h2>ASSET PORTFOLIO</h2>
       <div className="assets scrl">
-        {grid.map((b) => (
-          <PortfolioItem key={b} building={b + 1} />
-        ))}
+        {grid.map((b) =>
+          b !== -1 ? <PortfolioItem key={b} building={b + 1} /> : <></>
+        )}
       </div>
     </div>
   );
